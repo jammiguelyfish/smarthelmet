@@ -17,8 +17,9 @@ jobs:
       - name: Build pigpio
         run: |
           git clone --depth 1 --branch v79 https://github.com/joan2937/pigpio.git /tmp/pigpio
-          make -C /tmp/pigpio
-          sudo make -C /tmp/pigpio install
+          # v79 predates C23 (the new GCC default), where `()` means "no arguments"
+          make -C /tmp/pigpio CC="gcc -std=gnu11"
+          sudo make -C /tmp/pigpio CC="gcc -std=gnu11" install
           sudo ldconfig
       # Builds the same target a Raspberry Pi would; catches compile and link errors.
       - name: Build
