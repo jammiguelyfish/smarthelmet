@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install build dependencies
+        run: sudo apt-get update && sudo apt-get install -y g++ pkg-config libopencv-dev libpigpio-dev
+      # Builds the same target a Raspberry Pi would; catches compile and link errors.
+      - name: Build
+        run: make smarthelmet
