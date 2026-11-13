@@ -11,7 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install build dependencies
-        run: sudo apt-get update && sudo apt-get install -y g++ pkg-config libopencv-dev libpigpio-dev
+        run: sudo apt-get update && sudo apt-get install -y g++ make pkg-config libopencv-dev
+      # pigpio (Raspberry Pi GPIO library) is no longer packaged for the
+      # runner's Ubuntu release, so build a pinned release from source.
+      - name: Build pigpio
+        run: |
+          git clone --depth 1 --branch v79 https://github.com/joan2937/pigpio.git /tmp/pigpio
+          make -C /tmp/pigpio
+          sudo make -C /tmp/pigpio install
+          sudo ldconfig
       # Builds the same target a Raspberry Pi would; catches compile and link errors.
       - name: Build
         run: make smarthelmet
